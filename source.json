@@ -1,0 +1,36 @@
+{
+  "name": "Pixelix iOS — Unofficial Builds",
+  "identifier": "dev.hc6q.pixelix-ios-source",
+  "subtitle": "Automated Pixelix builds for sideloading",
+  "description": "Unofficial unsigned iOS builds of the open-source Pixelix client, automatically compiled from Ghostbyte's upstream releases for use with Feather and other AltStore-compatible source readers.",
+  "iconURL": "https://raw.githubusercontent.com/hc6q/pixelix/main/iosApp/iosApp/Assets.xcassets/AppIcon.appiconset/pixelix_logo_192.png",
+  "website": "https://github.com/hc6q/pixelix",
+  "apps": [
+    {
+      "name": "Pixelix",
+      "bundleIdentifier": "com.daniebeler.pfpixelix.iosApp",
+      "developerName": "Ghostbyte",
+      "subtitle": "Pixelfed & Vernissage client",
+      "localizedDescription": "An open-source client for Pixelfed and Vernissage, built with Compose Multiplatform for browsing, publishing photos and interacting across the federated social web. This IPA is an unofficial automated build of the upstream source code.",
+      "versionDescription": "Fix crashes on devices with specific languages",
+      "iconURL": "https://raw.githubusercontent.com/hc6q/pixelix/main/iosApp/iosApp/Assets.xcassets/AppIcon.appiconset/pixelix_logo_192.png",
+      "screenshotURLs": [
+        "https://raw.githubusercontent.com/hc6q/pixelix/main/assets/pixelix_screenshots.png"
+      ],
+      "versions": [
+        {
+          "version": "5.2.1",
+          "date": "2026-08-30T13:08:09Z",
+          "localizedDescription": "Fix crashes on devices with specific languages",
+          "downloadURL": "https://github.com/hc6q/pixelix/releases/download/ios-v5.2.1/Pixelix-5.2.1.ipa",
+          "minOSVersion": "16.2"
+        }
+      ],
+      "version": "5.2.1",
+      "versionDate": "2026-08-30T13:08:09Z",
+      "downloadURL": "https://github.com/hc6q/pixelix/releases/download/ios-v5.2.1/Pixelix-5.2.1.ipa",
+      "appPermissions": {}
+    }
+  ],
+  "news": []
+}
