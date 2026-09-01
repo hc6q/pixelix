@@ -15,7 +15,8 @@ def required(name: str) -> str:
 version = required("PIXELIX_VERSION")
 published_at = required("PIXELIX_PUBLISHED_AT")
 download_url = required("PIXELIX_DOWNLOAD_URL")
-ipa_size = int(required("PIXELIX_IPA_SIZE"))
+ipa_size_raw = os.environ.get("PIXELIX_IPA_SIZE", "").strip()
+ipa_size = int(ipa_size_raw) if ipa_size_raw else None
 changelog_b64 = os.environ.get("PIXELIX_CHANGELOG_B64", "")
 changelog = base64.b64decode(changelog_b64).decode("utf-8", errors="replace").strip() if changelog_b64 else ""
 if not changelog:
@@ -43,14 +44,33 @@ new_version = {
     "date": published_at,
     "localizedDescription": changelog,
     "downloadURL": download_url,
-    "size": ipa_size,
     "minOSVersion": "16.2"
 }
+if ipa_size is not None:
+    new_version["size"] = ipa_size
 
 # Replace a version if it was rebuilt, otherwise keep prior releases for downgrade/history.
 versions = [v for v in existing_versions if str(v.get("version", "")) != version]
 versions.insert(0, new_version)
 versions = versions[:30]
+
+app = {
+    "name": "Pixelix",
+    "bundleIdentifier": "com.daniebeler.pfpixelix.iosApp",
+    "developerName": "Ghostbyte",
+    "subtitle": "Pixelfed & Vernissage client",
+    "localizedDescription": "An open-source client for Pixelfed and Vernissage, built with Compose Multiplatform for browsing, publishing photos and interacting across the federated social web. This IPA is an unofficial automated build of the upstream source code.",
+    "versionDescription": changelog,
+    "iconURL": icon_url,
+    "screenshotURLs": [screenshot_url],
+    "versions": versions,
+    "version": version,
+    "versionDate": published_at,
+    "downloadURL": download_url,
+    "appPermissions": {}
+}
+if ipa_size is not None:
+    app["size"] = ipa_size
 
 source = {
     "name": "Pixelix iOS — Unofficial Builds",
@@ -59,24 +79,7 @@ source = {
     "description": "Unofficial unsigned iOS builds of the open-source Pixelix client, automatically compiled from Ghostbyte's upstream releases for use with Feather and other AltStore-compatible source readers.",
     "iconURL": icon_url,
     "website": repo_url,
-    "apps": [
-        {
-            "name": "Pixelix",
-            "bundleIdentifier": "com.daniebeler.pfpixelix.iosApp",
-            "developerName": "Ghostbyte",
-            "subtitle": "Pixelfed & Vernissage client",
-            "localizedDescription": "An open-source client for Pixelfed and Vernissage, built with Compose Multiplatform for browsing, publishing photos and interacting across the federated social web. This IPA is an unofficial automated build of the upstream source code.",
-            "versionDescription": changelog,
-            "iconURL": icon_url,
-            "screenshotURLs": [screenshot_url],
-            "versions": versions,
-            "version": version,
-            "versionDate": published_at,
-            "size": ipa_size,
-            "downloadURL": download_url,
-            "appPermissions": {}
-        }
-    ],
+    "apps": [app],
     "news": []
 }
 
