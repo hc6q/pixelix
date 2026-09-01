@@ -1,0 +1,112 @@
+name: Bootstrap Pixelix Feather Release
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/bootstrap-feather-release.yml"
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  bootstrap:
+    runs-on: macos-latest
+    env:
+      PIXELIX_VERSION: "5.2.1"
+      PIXELIX_TAG: "v5.2.1"
+      PIXELIX_PUBLISHED_AT: "2026-08-30T13:08:09Z"
+      PIXELIX_CHANGELOG_B64: "Rml4IGNyYXNoZXMgb24gZGV2aWNlcyB3aXRoIHNwZWNpZmljIGxhbmd1YWdlcw=="
+      SOURCE_RUN_ID: "33560493544"
+    steps:
+      - name: Checkout fork
+        uses: actions/checkout@v4
+
+      - name: Download previously verified unsigned IPA
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p bootstrap-artifact
+          gh run download "$SOURCE_RUN_ID" --repo "$GITHUB_REPOSITORY" --name Pixelix-iOS --dir bootstrap-artifact
+          test -f bootstrap-artifact/Pixelix.ipa
+
+      - name: Normalize app version and package release IPA
+        shell: bash
+        run: |
+          set -euo pipefail
+          work="$RUNNER_TEMP/pixelix-bootstrap"
+          rm -rf "$work"
+          mkdir -p "$work"
+          ditto -x -k bootstrap-artifact/Pixelix.ipa "$work"
+
+          app="$work/Payload/Pixelix.app"
+          test -d "$app"
+
+          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $PIXELIX_VERSION" "$app/Info.plist"
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $GITHUB_RUN_NUMBER" "$app/Info.plist"
+          find "$app" -type d -name '_CodeSignature' -prune -exec rm -rf {} + || true
+          find "$app" -name 'embedded.mobileprovision' -delete || true
+
+          ipa="$GITHUB_WORKSPACE/Pixelix-$PIXELIX_VERSION.ipa"
+          (
+            cd "$work"
+            /usr/bin/zip -qry "$ipa" Payload
+          )
+
+          /usr/bin/unzip -t "$ipa"
+          size="$(stat -f%z "$ipa")"
+          version="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$app/Info.plist")"
+          bundle="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$app/Info.plist")"
+          test "$version" = "$PIXELIX_VERSION"
+          test "$bundle" = "com.daniebeler.pfpixelix.iosApp"
+
+          echo "PIXELIX_IPA=$ipa" >> "$GITHUB_ENV"
+          echo "PIXELIX_IPA_SIZE=$size" >> "$GITHUB_ENV"
+
+      - name: Publish first permanent GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          release_tag="ios-$PIXELIX_TAG"
+          notes="$RUNNER_TEMP/release-notes.md"
+          cat > "$notes" <<'EOF'
+          Unofficial unsigned iOS build of Pixelix, compiled from the upstream Pixelix v5.2.1 source code for sideloading.
+
+          Upstream: https://github.com/ghostbyte-dev/pixelix/releases/tag/v5.2.1
+
+          ## Upstream changelog
+          Fix crashes on devices with specific languages
+
+          Sign this IPA with Feather, AltStore, SideStore or another compatible sideloading tool.
+          EOF
+
+          if gh release view "$release_tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$release_tag" "$PIXELIX_IPA" --clobber --repo "$GITHUB_REPOSITORY"
+            gh release edit "$release_tag" --title "Pixelix iOS $PIXELIX_VERSION" --notes-file "$notes" --repo "$GITHUB_REPOSITORY"
+          else
+            gh release create "$release_tag" "$PIXELIX_IPA" --title "Pixelix iOS $PIXELIX_VERSION" --notes-file "$notes" --repo "$GITHUB_REPOSITORY"
+          fi
+
+      - name: Update Feather source with permanent download
+        env:
+          PIXELIX_DOWNLOAD_URL: https://github.com/${{ github.repository }}/releases/download/ios-v5.2.1/Pixelix-5.2.1.ipa
+          PIXELIX_SOURCE_PATH: source.json
+        run: python3 scripts/update_feather_source.py
+
+      - name: Commit updated source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add source.json
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m "Publish Pixelix 5.2.1 Feather source"
+          git push origin main
