@@ -24,14 +24,14 @@
           "localizedDescription": "Fix crashes on devices with specific languages",
           "downloadURL": "https://github.com/hc6q/pixelix/releases/download/ios-v5.2.1/Pixelix-5.2.1.ipa",
           "minOSVersion": "16.2",
-          "size": 23989062
+          "size": 23989092
         }
       ],
       "version": "5.2.1",
       "versionDate": "2026-08-30T13:08:09Z",
       "downloadURL": "https://github.com/hc6q/pixelix/releases/download/ios-v5.2.1/Pixelix-5.2.1.ipa",
       "appPermissions": {},
-      "size": 23989062
+      "size": 23989092
     }
   ],
   "news": []
