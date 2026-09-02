@@ -112,6 +112,31 @@
       "downloadURL": "https://github.com/hc6q/pixelix/releases/download/manuscript-ios-v1.0.2/Manuscript-1.0.2.ipa",
       "appPermissions": {},
       "size": 9325208
+    },
+    {
+      "name": "KV4P/ATL",
+      "bundleIdentifier": "com.blakeross.kv4patl",
+      "developerName": "WX4ATL",
+      "subtitle": "ESP32 BLE ham-radio companion",
+      "localizedDescription": "A very niche native SwiftUI companion for KV4P HT amateur-radio hardware. It carries voice and KISS data over Bluetooth LE, supports APRS/AX.25 messaging and beacons, radio memories and control, and works with an ESP32 BLE firmware bridge. This IPA is an unofficial automated build of the upstream GPL source.",
+      "versionDescription": "Unofficial automated iPhone build of KV4P/ATL 0.3.6 from upstream commit 4082388. Native SwiftUI companion for KV4P HT radios with Bluetooth LE voice, APRS/AX.25 packet messaging, KISS TNC transport, radio control and memories.",
+      "iconURL": "https://raw.githubusercontent.com/WX4ATL/KV4P-ATL/main/web-flasher/assets/kv4p-radio-glyph.svg",
+      "screenshotURLs": [],
+      "versions": [
+        {
+          "version": "0.3.6",
+          "date": "2026-06-29T18:20:04-04:00",
+          "localizedDescription": "Unofficial automated iPhone build of KV4P/ATL 0.3.6 from upstream commit 4082388. Native SwiftUI companion for KV4P HT radios with Bluetooth LE voice, APRS/AX.25 packet messaging, KISS TNC transport, radio control and memories.",
+          "downloadURL": "https://github.com/hc6q/pixelix/releases/download/kv4patl-ios-v0.3.6/KV4PATL-0.3.6.ipa",
+          "minOSVersion": "17.0",
+          "size": 3346091
+        }
+      ],
+      "version": "0.3.6",
+      "versionDate": "2026-06-29T18:20:04-04:00",
+      "downloadURL": "https://github.com/hc6q/pixelix/releases/download/kv4patl-ios-v0.3.6/KV4PATL-0.3.6.ipa",
+      "appPermissions": {},
+      "size": 3346091
     }
   ],
   "news": []
