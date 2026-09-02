@@ -1,9 +1,9 @@
 {
-  "name": "Pixelix iOS — Unofficial Builds",
+  "name": "hc6q iOS Source",
   "identifier": "dev.hc6q.pixelix-ios-source",
-  "subtitle": "Automated Pixelix builds for sideloading",
-  "description": "Unofficial unsigned iOS builds of the open-source Pixelix client, automatically compiled from Ghostbyte's upstream releases for use with Feather and other AltStore-compatible source readers.",
-  "iconURL": "https://raw.githubusercontent.com/hc6q/pixelix/main/iosApp/iosApp/Assets.xcassets/AppIcon.appiconset/pixelix_logo_192.png",
+  "subtitle": "Automated open-source iOS builds",
+  "description": "Unofficial unsigned iOS builds compiled automatically from open-source upstream projects for Feather and other AltStore-compatible source readers.",
+  "iconURL": "https://github.com/hc6q.png",
   "website": "https://github.com/hc6q/pixelix",
   "apps": [
     {
@@ -32,6 +32,33 @@
       "downloadURL": "https://github.com/hc6q/pixelix/releases/download/ios-v5.2.1/Pixelix-5.2.1.ipa",
       "appPermissions": {},
       "size": 23989092
+    },
+    {
+      "name": "Aura Health",
+      "bundleIdentifier": "com.santiagoalonso.aurahealth",
+      "developerName": "Santiago Alonso",
+      "subtitle": "Private health dashboard",
+      "localizedDescription": "Your vitals, labs, medications, habits and health notes in one private dashboard. Aura uses SwiftData, supports Apple Health on iOS, optional CloudKit sync and an optional Claude-powered health assistant using your own API key. This IPA is an unofficial automated build of the upstream open-source project.",
+      "versionDescription": "Drop XcodeGen dependency, commit xcodeproj directly\n\nClone → open → build with no extra tools needed.",
+      "iconURL": "https://raw.githubusercontent.com/madebysan/aura-health/main/assets/app-icon.png",
+      "screenshotURLs": [
+        "https://raw.githubusercontent.com/madebysan/aura-health/main/assets/screenshots.png"
+      ],
+      "versions": [
+        {
+          "version": "1.0.0",
+          "date": "2026-03-17T23:00:00Z",
+          "localizedDescription": "Drop XcodeGen dependency, commit xcodeproj directly\n\nClone → open → build with no extra tools needed.",
+          "downloadURL": "https://github.com/hc6q/pixelix/releases/download/aura-ios-v1.0.0/AuraHealth-1.0.0.ipa",
+          "minOSVersion": "17.0",
+          "size": 4684878
+        }
+      ],
+      "version": "1.0.0",
+      "versionDate": "2026-03-17T23:00:00Z",
+      "downloadURL": "https://github.com/hc6q/pixelix/releases/download/aura-ios-v1.0.0/AuraHealth-1.0.0.ipa",
+      "appPermissions": {},
+      "size": 4684878
     }
   ],
   "news": []
