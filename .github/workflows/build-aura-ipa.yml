@@ -91,6 +91,16 @@ jobs:
           ref: ${{ needs.check.outputs.tag }}
           fetch-depth: 1
 
+      - name: Restore public build configuration
+        shell: bash
+        run: |
+          cat > Secrets.xcconfig <<'EOF'
+          // Public build defaults. The v1.0.0 tag references this file but does not include it.
+          WHOOP_CLIENT_ID =
+          WHOOP_CLIENT_SECRET =
+          #include? "Secrets.local.xcconfig"
+          EOF
+
       - name: Show build environment
         run: |
           xcodebuild -version
