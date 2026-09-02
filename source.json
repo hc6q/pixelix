@@ -84,6 +84,34 @@
       "downloadURL": "https://github.com/hc6q/pixelix/releases/download/dropstation-ios-v0.5.3/DropStation-0.5.3.ipa",
       "appPermissions": {},
       "size": 937621
+    },
+    {
+      "name": "Manuscript",
+      "bundleIdentifier": "com.dahlsjoo.manuscript",
+      "developerName": "Manuscript",
+      "subtitle": "Open-source writing studio",
+      "localizedDescription": "A free native SwiftUI writing app for long-form projects. Organize chapters and scenes, write with rich text backed by Markdown, import Scrivener projects, export to common formats, track writing goals, use iCloud Drive, and optionally connect AI providers with your own API key. This IPA is an unofficial automated build of the upstream open-source project.",
+      "versionDescription": "## Version 1.0.2 — What's New\n\n### New\n- Import from Markdown, plain text, PDF, HTML, and Word (DOCX on macOS)\n- Export to HTML and Scrivener 3 formats\n- On-device AI writing assistance powered by Apple Foundation Models\n- Text-to-speech with ElevenLabs voice integration\n- Favorites for quick access to your most-used documents\n- Keywords, collections, and document links for richer organization\n- Attach images and PDFs directly to your manuscripts\n- Native print support on both iOS and macOS\n- Trash folder with soft-delete so nothing is lost by accident\n- Automatic backup management to protect your work\n\n### Improved\n- Fresh warm brown accent theme across the app\n- Redesigned sheet actions with clear checkmark buttons\n- Tabbed Settings for easier navigation\n- Export button added to the toolbar for faster access\n- Streamlined new document creation with blank defaults\n- Improved Scrivener 3 export format compliance\n- Realistic procedural corkboard background\n\n### Fixed\n- iOS document rename now works reliably\n- Gradient shader rendering corrected\n- DOCX import defaults applied correctly\n\n---",
+      "iconURL": "https://raw.githubusercontent.com/manuscriptapp/manuscript/main/Manuscript/Manuscript/new-app-icon.icon/Assets/app-icon-simpler.png",
+      "screenshotURLs": [
+        "https://raw.githubusercontent.com/manuscriptapp/manuscript/main/docs/images/screenshot-ios.png",
+        "https://raw.githubusercontent.com/manuscriptapp/manuscript/main/docs/images/screenshot-ipad-launch.png"
+      ],
+      "versions": [
+        {
+          "version": "1.0.2",
+          "date": "2026-02-17T11:06:31Z",
+          "localizedDescription": "## Version 1.0.2 — What's New\n\n### New\n- Import from Markdown, plain text, PDF, HTML, and Word (DOCX on macOS)\n- Export to HTML and Scrivener 3 formats\n- On-device AI writing assistance powered by Apple Foundation Models\n- Text-to-speech with ElevenLabs voice integration\n- Favorites for quick access to your most-used documents\n- Keywords, collections, and document links for richer organization\n- Attach images and PDFs directly to your manuscripts\n- Native print support on both iOS and macOS\n- Trash folder with soft-delete so nothing is lost by accident\n- Automatic backup management to protect your work\n\n### Improved\n- Fresh warm brown accent theme across the app\n- Redesigned sheet actions with clear checkmark buttons\n- Tabbed Settings for easier navigation\n- Export button added to the toolbar for faster access\n- Streamlined new document creation with blank defaults\n- Improved Scrivener 3 export format compliance\n- Realistic procedural corkboard background\n\n### Fixed\n- iOS document rename now works reliably\n- Gradient shader rendering corrected\n- DOCX import defaults applied correctly\n\n---",
+          "downloadURL": "https://github.com/hc6q/pixelix/releases/download/manuscript-ios-v1.0.2/Manuscript-1.0.2.ipa",
+          "minOSVersion": "18.0",
+          "size": 9325208
+        }
+      ],
+      "version": "1.0.2",
+      "versionDate": "2026-02-17T11:06:31Z",
+      "downloadURL": "https://github.com/hc6q/pixelix/releases/download/manuscript-ios-v1.0.2/Manuscript-1.0.2.ipa",
+      "appPermissions": {},
+      "size": 9325208
     }
   ],
   "news": []
