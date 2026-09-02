@@ -142,12 +142,20 @@
       "developerName": "Santiago Alonso",
       "subtitle": "Private health dashboard",
       "localizedDescription": "Your vitals, labs, medications, habits and health notes in one private dashboard. Aura uses SwiftData, supports Apple Health on iOS, optional CloudKit sync and an optional Claude-powered health assistant using your own API key. This IPA is an unofficial automated build of the upstream open-source project.",
-      "versionDescription": "Drop XcodeGen dependency, commit xcodeproj directly\n\nClone → open → build with no extra tools needed.\n\nhc6q iOS build fixes: HealthKit values for the current day are updated in place, and authorized Apple Health data syncs automatically when Aura opens or returns to the foreground.",
+      "versionDescription": "Drop XcodeGen dependency, commit xcodeproj directly\n\nClone → open → build with no extra tools needed.\n\nhc6q iOS fixes: current-day HealthKit values are updated in place; instantaneous metrics keep the real latest Health sample timestamp; Vitals requests a sync when it appears; and authorized Apple Health data syncs when Aura opens or returns to the foreground.",
       "iconURL": "https://raw.githubusercontent.com/madebysan/aura-health/main/assets/app-icon.png",
       "screenshotURLs": [
         "https://raw.githubusercontent.com/madebysan/aura-health/main/assets/screenshots.png"
       ],
       "versions": [
+        {
+          "version": "1.0.2",
+          "date": "2026-09-02T19:28:16Z",
+          "localizedDescription": "Drop XcodeGen dependency, commit xcodeproj directly\n\nClone → open → build with no extra tools needed.\n\nhc6q iOS fixes: current-day HealthKit values are updated in place; instantaneous metrics keep the real latest Health sample timestamp; Vitals requests a sync when it appears; and authorized Apple Health data syncs when Aura opens or returns to the foreground.",
+          "downloadURL": "https://github.com/hc6q/pixelix/releases/download/aura-ios-v1.0.0-hc6q2/AuraHealth-1.0.2.ipa",
+          "minOSVersion": "17.0",
+          "size": 4703039
+        },
         {
           "version": "1.0.1",
           "date": "2026-03-17T23:00:00Z",
@@ -165,11 +173,11 @@
           "size": 4684878
         }
       ],
-      "version": "1.0.1",
-      "versionDate": "2026-03-17T23:00:00Z",
-      "downloadURL": "https://github.com/hc6q/pixelix/releases/download/aura-ios-v1.0.0-hc6q1/AuraHealth-1.0.1.ipa",
+      "version": "1.0.2",
+      "versionDate": "2026-09-02T19:28:16Z",
+      "downloadURL": "https://github.com/hc6q/pixelix/releases/download/aura-ios-v1.0.0-hc6q2/AuraHealth-1.0.2.ipa",
       "appPermissions": {},
-      "size": 4690800
+      "size": 4703039
     }
   ],
   "news": []
