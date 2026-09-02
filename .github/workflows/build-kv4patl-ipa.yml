@@ -1,0 +1,163 @@
+name: KV4P ATL iOS + Feather Source
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 11 * * *"
+  push:
+    paths:
+      - ".github/workflows/build-kv4patl-ipa.yml"
+      - "scripts/update_kv4patl_source.py"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout source metadata
+        uses: actions/checkout@v4
+        with:
+          path: source-meta
+
+      - name: Checkout upstream KV4P ATL
+        uses: actions/checkout@v4
+        with:
+          repository: WX4ATL/KV4P-ATL
+          path: upstream
+          fetch-depth: 1
+
+      - name: Read upstream metadata
+        id: meta
+        shell: bash
+        run: |
+          VERSION=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" upstream/kv4patl/Info.plist)
+          SHA=$(git -C upstream rev-parse HEAD)
+          DATE=$(git -C upstream show -s --format=%cI HEAD)
+          TAG="kv4patl-ios-v${VERSION}"
+
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "sha=${SHA}" >> "$GITHUB_OUTPUT"
+          echo "date=${DATE}" >> "$GITHUB_OUTPUT"
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "should_build=false" >> "$GITHUB_OUTPUT"
+            echo "Release $TAG already exists; nothing to do."
+          else
+            echo "should_build=true" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Install XcodeGen
+        if: steps.meta.outputs.should_build == 'true'
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        if: steps.meta.outputs.should_build == 'true'
+        working-directory: upstream
+        run: xcodegen generate
+
+      - name: Show build environment
+        if: steps.meta.outputs.should_build == 'true'
+        run: |
+          xcodebuild -version
+          xcodegen --version
+
+      - name: Build unsigned iPhone app
+        if: steps.meta.outputs.should_build == 'true'
+        working-directory: upstream
+        run: |
+          xcodebuild \
+            build \
+            -project kv4patl.xcodeproj \
+            -target kv4patl \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath "$PWD/DerivedData" \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY=""
+
+      - name: Package unsigned IPA
+        if: steps.meta.outputs.should_build == 'true'
+        shell: bash
+        run: |
+          APP_PATH=$(find upstream/DerivedData/Build/Products -type d -name "kv4patl.app" | head -n 1)
+          if [ -z "$APP_PATH" ]; then
+            echo "kv4patl.app not found"
+            find upstream/DerivedData/Build/Products -maxdepth 4 -type d -name "*.app" -print || true
+            exit 1
+          fi
+
+          rm -rf Payload
+          mkdir -p Payload
+          cp -R "$APP_PATH" "Payload/KV4PATL.app"
+          ditto -c -k --sequesterRsrc --keepParent Payload "KV4PATL-${{ steps.meta.outputs.version }}.ipa"
+          rm -rf Payload
+
+          SIZE=$(stat -f%z "KV4PATL-${{ steps.meta.outputs.version }}.ipa")
+          echo "IPA_SIZE=$SIZE" >> "$GITHUB_ENV"
+          shasum -a 256 "KV4PATL-${{ steps.meta.outputs.version }}.ipa"
+          ls -lh "KV4PATL-${{ steps.meta.outputs.version }}.ipa"
+
+      - name: Publish GitHub release
+        if: steps.meta.outputs.should_build == 'true'
+        shell: bash
+        run: |
+          cat > release-notes.md <<EOF
+          Unofficial unsigned iPhone build of KV4P/ATL ${{ steps.meta.outputs.version }}, compiled automatically from the upstream GPL-3.0-or-later source.
+
+          Upstream commit: https://github.com/WX4ATL/KV4P-ATL/commit/${{ steps.meta.outputs.sha }}
+          Upstream source: https://github.com/WX4ATL/KV4P-ATL
+
+          KV4P/ATL is a native SwiftUI companion for KV4P HT amateur-radio hardware. It carries voice and KISS data over Bluetooth LE and includes APRS/AX.25 messaging, beacons, memories and radio control.
+
+          This IPA is unsigned. Sign it with Feather or another compatible sideloading tool before installing.
+          EOF
+
+          gh release create "${{ steps.meta.outputs.tag }}" \
+            "KV4PATL-${{ steps.meta.outputs.version }}.ipa" \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "KV4P/ATL iOS ${{ steps.meta.outputs.version }}" \
+            --notes-file release-notes.md
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Update Feather source
+        if: steps.meta.outputs.should_build == 'true'
+        shell: bash
+        run: |
+          cd source-meta
+          export KV4PATL_VERSION="${{ steps.meta.outputs.version }}"
+          export KV4PATL_PUBLISHED_AT="${{ steps.meta.outputs.date }}"
+          export KV4PATL_UPSTREAM_SHA="${{ steps.meta.outputs.sha }}"
+          export KV4PATL_DOWNLOAD_URL="https://github.com/${GITHUB_REPOSITORY}/releases/download/${{ steps.meta.outputs.tag }}/KV4PATL-${{ steps.meta.outputs.version }}.ipa"
+          export KV4PATL_IPA_SIZE="$IPA_SIZE"
+          python3 scripts/update_kv4patl_source.py
+
+      - name: Commit Feather source
+        if: steps.meta.outputs.should_build == 'true'
+        working-directory: source-meta
+        shell: bash
+        run: |
+          if git diff --quiet source.json; then
+            echo "source.json already up to date"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add source.json
+          git commit -m "Add KV4P ATL ${{ steps.meta.outputs.version }} to Feather source"
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      - name: Upload IPA artifact
+        if: steps.meta.outputs.should_build == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: KV4PATL-${{ steps.meta.outputs.version }}-iOS
+          path: KV4PATL-${{ steps.meta.outputs.version }}.ipa
