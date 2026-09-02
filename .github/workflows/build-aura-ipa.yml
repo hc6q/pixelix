@@ -16,6 +16,7 @@ on:
     paths:
       - ".github/workflows/build-aura-ipa.yml"
       - "scripts/update_aura_source.py"
+      - "scripts/patch_aura_health.py"
 
 permissions:
   contents: write
@@ -26,6 +27,7 @@ concurrency:
 
 env:
   UPSTREAM_REPO: madebysan/aura-health
+  AURA_PATCH_REVISION: "1"
 
 jobs:
   check:
@@ -34,6 +36,8 @@ jobs:
     outputs:
       tag: ${{ steps.tag.outputs.tag }}
       version: ${{ steps.tag.outputs.version }}
+      upstream_version: ${{ steps.tag.outputs.upstream_version }}
+      release_tag: ${{ steps.tag.outputs.release_tag }}
       published_at: ${{ steps.tag.outputs.published_at }}
       changelog_b64: ${{ steps.tag.outputs.changelog_b64 }}
       should_build: ${{ steps.tag.outputs.should_build }}
@@ -55,11 +59,23 @@ jobs:
             exit 1
           fi
 
-          version="${tag#v}"
+          upstream_version="${tag#v}"
+          if [[ ! "$upstream_version" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+) ]]; then
+            echo "Unsupported upstream version: $upstream_version"
+            exit 1
+          fi
+
+          major="${BASH_REMATCH[1]}"
+          minor="${BASH_REMATCH[2]}"
+          patch="${BASH_REMATCH[3]}"
+          version="${major}.${minor}.$((patch + AURA_PATCH_REVISION))"
+
           commit="$(gh api "repos/${UPSTREAM_REPO}/commits/${tag}")"
           published_at="$(jq -r '.commit.committer.date' <<<"$commit")"
-          changelog_b64="$(jq -r '(.commit.message // "") | @base64' <<<"$commit")"
-          release_tag="aura-ios-${tag}"
+          upstream_changelog="$(jq -r '(.commit.message // "")' <<<"$commit")"
+          patch_notes="hc6q iOS build fixes: HealthKit values for the current day are updated in place, and authorized Apple Health data syncs automatically when Aura opens or returns to the foreground."
+          changelog_b64="$(printf '%s\n\n%s' "$upstream_changelog" "$patch_notes" | base64 -w 0)"
+          release_tag="aura-ios-${tag}-hc6q${AURA_PATCH_REVISION}"
 
           should_build=true
           if gh release view "$release_tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
@@ -70,10 +86,14 @@ jobs:
             should_build=true
           fi
 
-          echo "Upstream: $tag"
+          echo "Upstream: $tag ($upstream_version)"
+          echo "Distribution version: $version"
+          echo "Release tag: $release_tag"
           echo "Build required: $should_build"
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
           echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "upstream_version=$upstream_version" >> "$GITHUB_OUTPUT"
+          echo "release_tag=$release_tag" >> "$GITHUB_OUTPUT"
           echo "published_at=$published_at" >> "$GITHUB_OUTPUT"
           echo "changelog_b64=$changelog_b64" >> "$GITHUB_OUTPUT"
           echo "should_build=$should_build" >> "$GITHUB_OUTPUT"
@@ -91,6 +111,14 @@ jobs:
           ref: ${{ needs.check.outputs.tag }}
           fetch-depth: 1
 
+      - name: Checkout source and patch repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}
+          ref: main
+          path: source-repo
+          token: ${{ github.token }}
+
       - name: Restore public build configuration
         shell: bash
         run: |
@@ -100,6 +128,10 @@ jobs:
           WHOOP_CLIENT_SECRET =
           #include? "Secrets.local.xcconfig"
           EOF
+
+      - name: Apply HealthKit live-sync fixes
+        shell: bash
+        run: python3 source-repo/scripts/patch_aura_health.py
 
       - name: Show build environment
         run: |
@@ -182,47 +214,40 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           AURA_VERSION: ${{ needs.check.outputs.version }}
+          AURA_UPSTREAM_VERSION: ${{ needs.check.outputs.upstream_version }}
           AURA_TAG: ${{ needs.check.outputs.tag }}
+          AURA_RELEASE_TAG: ${{ needs.check.outputs.release_tag }}
           AURA_CHANGELOG_B64: ${{ needs.check.outputs.changelog_b64 }}
         shell: bash
         run: |
           set -euo pipefail
-          release_tag="aura-ios-${AURA_TAG}"
           notes_file="$RUNNER_TEMP/aura-release-notes.md"
 
           python3 - <<'PY' > "$notes_file"
           import base64, os
           body = base64.b64decode(os.environ.get("AURA_CHANGELOG_B64", "")).decode("utf-8", errors="replace").strip()
-          print("Unofficial unsigned iOS build of Aura Health, compiled automatically from the upstream tag.")
+          print(f"Unofficial unsigned iOS build of Aura Health {os.environ['AURA_VERSION']}, based on upstream {os.environ['AURA_UPSTREAM_VERSION']}.")
           print()
           print(f"Upstream: https://github.com/madebysan/aura-health/tree/{os.environ['AURA_TAG']}")
           print()
-          print("## Upstream change")
-          print(body or "No upstream changelog was provided.")
+          print("## Changes")
+          print(body or "No changelog was provided.")
           print()
           print("Sign this IPA with Feather, AltStore, SideStore or another compatible sideloading tool.")
           PY
 
-          if gh release view "$release_tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            gh release upload "$release_tag" "$AURA_IPA" --clobber --repo "$GITHUB_REPOSITORY"
-            gh release edit "$release_tag" \
+          if gh release view "$AURA_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$AURA_RELEASE_TAG" "$AURA_IPA" --clobber --repo "$GITHUB_REPOSITORY"
+            gh release edit "$AURA_RELEASE_TAG" \
               --title "Aura Health iOS ${AURA_VERSION}" \
               --notes-file "$notes_file" \
               --repo "$GITHUB_REPOSITORY"
           else
-            gh release create "$release_tag" "$AURA_IPA" \
+            gh release create "$AURA_RELEASE_TAG" "$AURA_IPA" \
               --title "Aura Health iOS ${AURA_VERSION}" \
               --notes-file "$notes_file" \
               --repo "$GITHUB_REPOSITORY"
           fi
-
-      - name: Checkout source metadata
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ github.repository }}
-          ref: main
-          path: source-repo
-          token: ${{ github.token }}
 
       - name: Update Feather source
         env:
@@ -230,7 +255,7 @@ jobs:
           AURA_PUBLISHED_AT: ${{ needs.check.outputs.published_at }}
           AURA_CHANGELOG_B64: ${{ needs.check.outputs.changelog_b64 }}
           AURA_IPA_SIZE: ${{ env.AURA_IPA_SIZE }}
-          AURA_DOWNLOAD_URL: https://github.com/${{ github.repository }}/releases/download/aura-ios-${{ needs.check.outputs.tag }}/AuraHealth-${{ needs.check.outputs.version }}.ipa
+          AURA_DOWNLOAD_URL: https://github.com/${{ github.repository }}/releases/download/${{ needs.check.outputs.release_tag }}/AuraHealth-${{ needs.check.outputs.version }}.ipa
           AURA_SOURCE_PATH: source-repo/source.json
         run: python3 source-repo/scripts/update_aura_source.py
 
@@ -249,6 +274,7 @@ jobs:
           fi
 
           git commit -m "Update Feather source for Aura Health ${{ needs.check.outputs.version }}"
+          git pull --rebase origin main
           git push origin main
 
       - name: Upload IPA artifact
