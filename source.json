@@ -137,6 +137,31 @@
       "downloadURL": "https://github.com/hc6q/pixelix/releases/download/kv4patl-ios-v0.3.6/KV4PATL-0.3.6.ipa",
       "appPermissions": {},
       "size": 3346091
+    },
+    {
+      "name": "Pomodoro Timer",
+      "bundleIdentifier": "com.tsymlov.alexey.Pomodoro-Timer",
+      "developerName": "Alexey Tsymlov",
+      "subtitle": "Minimal focus timer",
+      "localizedDescription": "A clean SwiftUI Pomodoro timer with 25-minute focus sessions, short and long breaks, per-session goals, statistics, automatic cycling, local notifications and persistent settings. This IPA is an unofficial automated build of the upstream MIT-licensed project.",
+      "versionDescription": "Merge pull request #2 from ninjelle/dev",
+      "iconURL": "https://raw.githubusercontent.com/Tsymlov/Pomodoro-Timer/dev/Pomodoro%20Timer/Assets.xcassets/AppIcon.appiconset/AppIcon.png",
+      "screenshotURLs": [],
+      "versions": [
+        {
+          "version": "1.0.125",
+          "date": "2025-09-18T17:08:28+03:00",
+          "localizedDescription": "Merge pull request #2 from ninjelle/dev",
+          "downloadURL": "https://github.com/hc6q/pixelix/releases/download/pomodoro-ios-v1.0.125/PomodoroTimer-1.0.125.ipa",
+          "minOSVersion": "18.0",
+          "size": 2085336
+        }
+      ],
+      "version": "1.0.125",
+      "versionDate": "2025-09-18T17:08:28+03:00",
+      "downloadURL": "https://github.com/hc6q/pixelix/releases/download/pomodoro-ios-v1.0.125/PomodoroTimer-1.0.125.ipa",
+      "appPermissions": {},
+      "size": 2085336
     }
   ],
   "news": []
