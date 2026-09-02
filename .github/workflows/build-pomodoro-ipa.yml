@@ -61,6 +61,22 @@ jobs:
         if: steps.meta.outputs.should_build == 'true'
         run: xcodebuild -version
 
+      - name: Patch upstream iOS color compatibility
+        if: steps.meta.outputs.should_build == 'true'
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          p = Path("upstream/Pomodoro Timer/UI/SettingsView.swift")
+          s = p.read_text(encoding="utf-8")
+          s = s.replace("import SwiftUI\n", "import SwiftUI\n#if os(iOS)\nimport UIKit\n#endif\n", 1)
+          s = s.replace("Color(NSColor.windowBackgroundColor)", "Color(uiColor: UIColor.systemBackground)")
+          s = s.replace("Color(NSColor.controlBackgroundColor)", "Color(uiColor: UIColor.secondarySystemBackground)")
+          p.write_text(s, encoding="utf-8")
+          print("Patched SettingsView.swift for iphoneos build")
+          PY
+
       - name: Build unsigned iPhone app
         if: steps.meta.outputs.should_build == 'true'
         working-directory: upstream
