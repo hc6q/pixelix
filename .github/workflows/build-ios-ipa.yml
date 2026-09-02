@@ -21,7 +21,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: pixelix-ios-source
+  group: hc6q-feather-source
   cancel-in-progress: false
 
 env:
@@ -140,9 +140,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-
-          # Remove any signatures/profiles left by nested frameworks so the sideloading
-          # signer can sign the complete bundle cleanly on-device.
           find "$APP_PATH" -type d -name '_CodeSignature' -prune -exec rm -rf {} + || true
           find "$APP_PATH" -name 'embedded.mobileprovision' -delete || true
 
