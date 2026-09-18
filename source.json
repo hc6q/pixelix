@@ -178,6 +178,35 @@
       "downloadURL": "https://github.com/hc6q/pixelix/releases/download/aura-ios-v1.0.0-hc6q2/AuraHealth-1.0.2.ipa",
       "appPermissions": {},
       "size": 4703039
+    },
+    {
+      "name": "Spotify Glass",
+      "bundleIdentifier": "app.carambola5307.spinach7929",
+      "developerName": "spoti.pw",
+      "subtitle": "Spotify in Liquid Glass",
+      "localizedDescription": "A spoti.pw build for Spotify 9.1.78 with the Liquid Glass redesign and bundled tweaks. This IPA is unsigned and intended to be signed with the FlareStore certificate matching app.carambola5307.spinach7929.",
+      "versionDescription": "Spotify 9.1.78 with spoti.pw Liquid Glass. Built from the user-supplied decrypted IPA and rewritten to the FlareStore bundle identifier app.carambola5307.spinach7929.",
+      "iconURL": "https://raw.githubusercontent.com/hc6q/spoti.pw/main/docs/icon.png",
+      "screenshotURLs": [
+        "https://raw.githubusercontent.com/hc6q/spoti.pw/main/docs/screenshots/now-playing.webp",
+        "https://raw.githubusercontent.com/hc6q/spoti.pw/main/docs/screenshots/album.webp",
+        "https://raw.githubusercontent.com/hc6q/spoti.pw/main/docs/screenshots/playlist.webp"
+      ],
+      "versions": [
+        {
+          "version": "9.1.78",
+          "date": "2026-09-18T17:08:44Z",
+          "localizedDescription": "Spotify 9.1.78 with spoti.pw Liquid Glass. Bundle identifier: app.carambola5307.spinach7929.",
+          "downloadURL": "https://github.com/hc6q/pixelix/releases/download/spotify-glass-9.1.78/Spotify-9.1.78-Glass.ipa",
+          "minOSVersion": "16.1",
+          "size": 131626988
+        }
+      ],
+      "version": "9.1.78",
+      "versionDate": "2026-09-18T17:08:44Z",
+      "downloadURL": "https://github.com/hc6q/pixelix/releases/download/spotify-glass-9.1.78/Spotify-9.1.78-Glass.ipa",
+      "appPermissions": {},
+      "size": 131626988
     }
   ],
   "news": []
