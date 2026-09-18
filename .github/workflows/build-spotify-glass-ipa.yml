@@ -1,18 +1,18 @@
 name: Spotify Glass iOS + Feather Source
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - ".github/workflows/build-spotify-glass-ipa.yml"
   workflow_dispatch:
+    inputs:
+      ipa_url:
+        description: "Direct link to a decrypted Spotify 9.1.78 IPA"
+        required: true
+        type: string
 
 permissions:
   contents: write
 
 env:
   BUNDLE_ID: app.carambola5307.spinach7929
-  TEMP_IPA_URL: "https://ucaff99e158a763fe128b6d9f1aa.dl.dropboxusercontent.com/cd/0/get/DIYyFH_38k-d9Ss0wfThrmipuYKDNIY28XBQrwmvsUXu0CJ74MVeajB1iZUnKt1XaTBASUv4C__NMHeRr-linFdiWuJbW_P8EG4AiiKSaD6fzPU2viNcKupItKt9tuYdK7RS5lqa9lFutJQHfRu6sn_VRrSwnLoLtvEXMOc1KQJkdA/file?c_luid=84de0748"
 
 jobs:
   build:
@@ -39,7 +39,7 @@ jobs:
         working-directory: spoti-pw
         run: |
           mkdir -p ipa
-          curl -fsSL "$TEMP_IPA_URL" -o ipa/spotify.ipa
+          curl -fsSL "${{ inputs.ipa_url }}" -o ipa/spotify.ipa
           python3 - <<'PY'
           import zipfile, plistlib
           p="ipa/spotify.ipa"
@@ -62,7 +62,6 @@ jobs:
           mkdir -p /tmp/spotifyglass-check
           unzip -q "$IPA" -d /tmp/spotifyglass-check
           APP="$(find /tmp/spotifyglass-check/Payload -maxdepth 1 -name '*.app' | head -1)"
-          /usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$APP/Info.plist"
           test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$APP/Info.plist")" = "$BUNDLE_ID"
 
       - name: Publish GitHub release
