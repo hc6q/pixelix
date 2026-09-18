@@ -1,0 +1,76 @@
+name: Spotify Glass iOS + Feather Source
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/build-spotify-glass-ipa.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  BUNDLE_ID: app.carambola5307.spinach7929
+  TEMP_IPA_URL: "https://ucaff99e158a763fe128b6d9f1aa.dl.dropboxusercontent.com/cd/0/get/DIYyFH_38k-d9Ss0wfThrmipuYKDNIY28XBQrwmvsUXu0CJ74MVeajB1iZUnKt1XaTBASUv4C__NMHeRr-linFdiWuJbW_P8EG4AiiKSaD6fzPU2viNcKupItKt9tuYdK7RS5lqa9lFutJQHfRu6sn_VRrSwnLoLtvEXMOc1KQJkdA/file?c_luid=84de0748"
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Clone spoti.pw
+        run: git clone --depth 1 https://github.com/hc6q/spoti.pw.git spoti-pw
+
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Clone Theos
+        run: git clone --recursive --depth 1 https://github.com/theos/theos.git spoti-pw/theos
+
+      - name: Install tools
+        run: |
+          brew install make dpkg ldid
+          python3 -m pip install --break-system-packages git+https://github.com/asdfzxcvbn/pyzule-rw.git
+
+      - name: Download Spotify 9.1.78 IPA
+        working-directory: spoti-pw
+        run: |
+          mkdir -p ipa
+          curl -fsSL "$TEMP_IPA_URL" -o ipa/spotify.ipa
+          python3 - <<'PY'
+          import zipfile, plistlib
+          p="ipa/spotify.ipa"
+          z=zipfile.ZipFile(p)
+          info=plistlib.loads(z.read("Payload/Spotify.app/Info.plist"))
+          assert info["CFBundleShortVersionString"]=="9.1.78", info["CFBundleShortVersionString"]
+          PY
+
+      - name: Build Spotify Glass
+        working-directory: spoti-pw
+        env:
+          THEOS: ${{ github.workspace }}/spoti-pw/theos
+        run: make release
+
+      - name: Validate output bundle
+        working-directory: spoti-pw
+        run: |
+          IPA="$(ls out/*.ipa | head -1)"
+          rm -rf /tmp/spotifyglass-check
+          mkdir -p /tmp/spotifyglass-check
+          unzip -q "$IPA" -d /tmp/spotifyglass-check
+          APP="$(find /tmp/spotifyglass-check/Payload -maxdepth 1 -name '*.app' | head -1)"
+          /usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$APP/Info.plist"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$APP/Info.plist")" = "$BUNDLE_ID"
+
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          IPA="$(ls spoti-pw/out/*.ipa | head -1)"
+          cp "$IPA" "Spotify-9.1.78-Glass.ipa"
+          TAG="spotify-glass-9.1.78"
+          gh release delete "$TAG" --yes --cleanup-tag 2>/dev/null || true
+          gh release create "$TAG" "Spotify-9.1.78-Glass.ipa"             --title "Spotify Glass 9.1.78"             --notes "Unsigned spoti.pw build based on Spotify 9.1.78. Bundle identifier: app.carambola5307.spinach7929."
