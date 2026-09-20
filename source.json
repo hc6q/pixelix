@@ -12,12 +12,20 @@
       "developerName": "Ghostbyte",
       "subtitle": "Pixelfed & Vernissage client",
       "localizedDescription": "An open-source client for Pixelfed and Vernissage, built with Compose Multiplatform for browsing, publishing photos and interacting across the federated social web. This IPA is an unofficial automated build of the upstream source code.",
-      "versionDescription": "Fix crashes on devices with specific languages",
+      "versionDescription": "- Add preference to enable/disable double tap to like\r\n - Implement pinning of posts\r\n - Show images and videos in private messages\r\n - Add posts tab in search\r\n - Upgrade navigation library\r\n - Bug fixes",
       "iconURL": "https://raw.githubusercontent.com/hc6q/pixelix/main/iosApp/iosApp/Assets.xcassets/AppIcon.appiconset/pixelix_logo_192.png",
       "screenshotURLs": [
         "https://raw.githubusercontent.com/hc6q/pixelix/main/assets/pixelix_screenshots.png"
       ],
       "versions": [
+        {
+          "version": "5.2.2",
+          "date": "2026-09-20T21:10:49Z",
+          "localizedDescription": "- Add preference to enable/disable double tap to like\r\n - Implement pinning of posts\r\n - Show images and videos in private messages\r\n - Add posts tab in search\r\n - Upgrade navigation library\r\n - Bug fixes",
+          "downloadURL": "https://github.com/hc6q/pixelix/releases/download/ios-v5.2.2/Pixelix-5.2.2.ipa",
+          "minOSVersion": "16.2",
+          "size": 23925529
+        },
         {
           "version": "5.2.1",
           "date": "2026-08-30T13:08:09Z",
@@ -27,11 +35,11 @@
           "size": 23989092
         }
       ],
-      "version": "5.2.1",
-      "versionDate": "2026-08-30T13:08:09Z",
-      "downloadURL": "https://github.com/hc6q/pixelix/releases/download/ios-v5.2.1/Pixelix-5.2.1.ipa",
+      "version": "5.2.2",
+      "versionDate": "2026-09-20T21:10:49Z",
+      "downloadURL": "https://github.com/hc6q/pixelix/releases/download/ios-v5.2.2/Pixelix-5.2.2.ipa",
       "appPermissions": {},
-      "size": 23989092
+      "size": 23925529
     },
     {
       "name": "DropStation",
