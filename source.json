@@ -145,49 +145,6 @@
       "size": 2085336
     },
     {
-      "name": "Aura Health",
-      "bundleIdentifier": "com.santiagoalonso.aurahealth",
-      "developerName": "Santiago Alonso",
-      "subtitle": "Private health dashboard",
-      "localizedDescription": "Your vitals, labs, medications, habits and health notes in one private dashboard. Aura uses SwiftData, supports Apple Health on iOS, optional CloudKit sync and an optional Claude-powered health assistant using your own API key. This IPA is an unofficial automated build of the upstream open-source project.",
-      "versionDescription": "Drop XcodeGen dependency, commit xcodeproj directly\n\nClone → open → build with no extra tools needed.\n\nhc6q iOS fixes: current-day HealthKit values are updated in place; instantaneous metrics keep the real latest Health sample timestamp; Vitals requests a sync when it appears; and authorized Apple Health data syncs when Aura opens or returns to the foreground.",
-      "iconURL": "https://raw.githubusercontent.com/madebysan/aura-health/main/assets/app-icon.png",
-      "screenshotURLs": [
-        "https://raw.githubusercontent.com/madebysan/aura-health/main/assets/screenshots.png"
-      ],
-      "versions": [
-        {
-          "version": "1.0.2",
-          "date": "2026-09-02T19:28:16Z",
-          "localizedDescription": "Drop XcodeGen dependency, commit xcodeproj directly\n\nClone → open → build with no extra tools needed.\n\nhc6q iOS fixes: current-day HealthKit values are updated in place; instantaneous metrics keep the real latest Health sample timestamp; Vitals requests a sync when it appears; and authorized Apple Health data syncs when Aura opens or returns to the foreground.",
-          "downloadURL": "https://github.com/hc6q/pixelix/releases/download/aura-ios-v1.0.0-hc6q2/AuraHealth-1.0.2.ipa",
-          "minOSVersion": "17.0",
-          "size": 4703039
-        },
-        {
-          "version": "1.0.1",
-          "date": "2026-03-17T23:00:00Z",
-          "localizedDescription": "Drop XcodeGen dependency, commit xcodeproj directly\n\nClone → open → build with no extra tools needed.\n\nhc6q iOS build fixes: HealthKit values for the current day are updated in place, and authorized Apple Health data syncs automatically when Aura opens or returns to the foreground.",
-          "downloadURL": "https://github.com/hc6q/pixelix/releases/download/aura-ios-v1.0.0-hc6q1/AuraHealth-1.0.1.ipa",
-          "minOSVersion": "17.0",
-          "size": 4690800
-        },
-        {
-          "version": "1.0.0",
-          "date": "2026-03-17T23:00:00Z",
-          "localizedDescription": "Drop XcodeGen dependency, commit xcodeproj directly\n\nClone → open → build with no extra tools needed.",
-          "downloadURL": "https://github.com/hc6q/pixelix/releases/download/aura-ios-v1.0.0/AuraHealth-1.0.0.ipa",
-          "minOSVersion": "17.0",
-          "size": 4684878
-        }
-      ],
-      "version": "1.0.2",
-      "versionDate": "2026-09-02T19:28:16Z",
-      "downloadURL": "https://github.com/hc6q/pixelix/releases/download/aura-ios-v1.0.0-hc6q2/AuraHealth-1.0.2.ipa",
-      "appPermissions": {},
-      "size": 4703039
-    },
-    {
       "name": "Spotify Glass",
       "bundleIdentifier": "app.carambola5307.spinach7929",
       "developerName": "spoti.pw",
@@ -215,6 +172,57 @@
       "downloadURL": "https://github.com/hc6q/pixelix/releases/download/spotify-glass-9.1.78/Spotify-9.1.78-Glass.ipa",
       "appPermissions": {},
       "size": 131626988
+    },
+    {
+      "name": "Aura Health",
+      "bundleIdentifier": "com.santiagoalonso.aurahealth",
+      "developerName": "Santiago Alonso",
+      "subtitle": "Private health dashboard",
+      "localizedDescription": "Your vitals, labs, medications, habits and health notes in one private dashboard. Aura uses SwiftData, supports Apple Health on iOS, optional CloudKit sync and an optional multi-provider AI health assistant with Groq, Cloudflare Workers AI and Mistral, plus local Vision OCR for document extraction. This IPA is an unofficial unsigned build maintained by hc6q.",
+      "versionDescription": "Merge pull request #1 from hc6q/feature/multi-provider-ai\n\nMigrate Aura AI to Groq, Cloudflare and Mistral with local OCR\n\nhc6q build: Aura AI now uses shared Chat Completions providers (Groq, Cloudflare Workers AI and Mistral) with local Vision OCR and validation, while retaining the existing HealthKit fixes.",
+      "iconURL": "https://raw.githubusercontent.com/madebysan/aura-health/main/assets/app-icon.png",
+      "screenshotURLs": [
+        "https://raw.githubusercontent.com/madebysan/aura-health/main/assets/screenshots.png"
+      ],
+      "versions": [
+        {
+          "version": "1.0.3",
+          "date": "2026-09-26T03:48:40Z",
+          "localizedDescription": "Merge pull request #1 from hc6q/feature/multi-provider-ai\n\nMigrate Aura AI to Groq, Cloudflare and Mistral with local OCR\n\nhc6q build: Aura AI now uses shared Chat Completions providers (Groq, Cloudflare Workers AI and Mistral) with local Vision OCR and validation, while retaining the existing HealthKit fixes.",
+          "downloadURL": "https://github.com/hc6q/pixelix/releases/download/aura-ios-v1.0.0-hc6q3/AuraHealth-1.0.3.ipa",
+          "minOSVersion": "17.0",
+          "size": 4720756
+        },
+        {
+          "version": "1.0.2",
+          "date": "2026-09-02T19:28:16Z",
+          "localizedDescription": "Drop XcodeGen dependency, commit xcodeproj directly\n\nClone → open → build with no extra tools needed.\n\nhc6q iOS fixes: current-day HealthKit values are updated in place; instantaneous metrics keep the real latest Health sample timestamp; Vitals requests a sync when it appears; and authorized Apple Health data syncs when Aura opens or returns to the foreground.",
+          "downloadURL": "https://github.com/hc6q/pixelix/releases/download/aura-ios-v1.0.0-hc6q2/AuraHealth-1.0.2.ipa",
+          "minOSVersion": "17.0",
+          "size": 4703039
+        },
+        {
+          "version": "1.0.1",
+          "date": "2026-03-17T23:00:00Z",
+          "localizedDescription": "Drop XcodeGen dependency, commit xcodeproj directly\n\nClone → open → build with no extra tools needed.\n\nhc6q iOS build fixes: HealthKit values for the current day are updated in place, and authorized Apple Health data syncs automatically when Aura opens or returns to the foreground.",
+          "downloadURL": "https://github.com/hc6q/pixelix/releases/download/aura-ios-v1.0.0-hc6q1/AuraHealth-1.0.1.ipa",
+          "minOSVersion": "17.0",
+          "size": 4690800
+        },
+        {
+          "version": "1.0.0",
+          "date": "2026-03-17T23:00:00Z",
+          "localizedDescription": "Drop XcodeGen dependency, commit xcodeproj directly\n\nClone → open → build with no extra tools needed.",
+          "downloadURL": "https://github.com/hc6q/pixelix/releases/download/aura-ios-v1.0.0/AuraHealth-1.0.0.ipa",
+          "minOSVersion": "17.0",
+          "size": 4684878
+        }
+      ],
+      "version": "1.0.3",
+      "versionDate": "2026-09-26T03:48:40Z",
+      "downloadURL": "https://github.com/hc6q/pixelix/releases/download/aura-ios-v1.0.0-hc6q3/AuraHealth-1.0.3.ipa",
+      "appPermissions": {},
+      "size": 4720756
     }
   ],
   "news": []
