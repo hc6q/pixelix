@@ -27,7 +27,9 @@ concurrency:
 
 env:
   UPSTREAM_REPO: madebysan/aura-health
-  AURA_PATCH_REVISION: "2"
+  AURA_BUILD_REPO: hc6q/aura-health
+  AURA_BUILD_REF: main
+  AURA_PATCH_REVISION: "3"
 
 jobs:
   build:
@@ -66,9 +68,10 @@ jobs:
           version="${major}.${minor}.$((patch + AURA_PATCH_REVISION))"
           release_tag="aura-ios-${tag}-hc6q${AURA_PATCH_REVISION}"
           upstream_date="$(gh api "repos/${UPSTREAM_REPO}/commits/${tag}" --jq '.commit.committer.date')"
-          upstream_changelog="$(gh api "repos/${UPSTREAM_REPO}/commits/${tag}" --jq '.commit.message // ""')"
-          patch_notes="hc6q iOS fixes: current-day HealthKit values are updated in place; instantaneous metrics keep the real latest Health sample timestamp; Vitals requests a sync when it appears; and authorized Apple Health data syncs when Aura opens or returns to the foreground."
-          changelog_b64="$(printf '%s\n\n%s' "$upstream_changelog" "$patch_notes" | base64 | tr -d '\n')"
+          build_sha="$(gh api "repos/${AURA_BUILD_REPO}/commits/${AURA_BUILD_REF}" --jq '.sha')"
+          build_message="$(gh api "repos/${AURA_BUILD_REPO}/commits/${AURA_BUILD_REF}" --jq '.commit.message // ""')"
+          patch_notes="hc6q build: Aura AI now uses shared Chat Completions providers (Groq, Cloudflare Workers AI and Mistral) with local Vision OCR and validation, while retaining the existing HealthKit fixes."
+          changelog_b64="$(printf '%s\n\n%s' "$build_message" "$patch_notes" | base64 | tr -d '\n')"
           published_at="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
 
           should_build=true
@@ -84,6 +87,7 @@ jobs:
           echo "version=$version" >> "$GITHUB_OUTPUT"
           echo "release_tag=$release_tag" >> "$GITHUB_OUTPUT"
           echo "upstream_date=$upstream_date" >> "$GITHUB_OUTPUT"
+          echo "build_sha=$build_sha" >> "$GITHUB_OUTPUT"
           echo "published_at=$published_at" >> "$GITHUB_OUTPUT"
           echo "changelog_b64=$changelog_b64" >> "$GITHUB_OUTPUT"
           echo "should_build=$should_build" >> "$GITHUB_OUTPUT"
@@ -92,34 +96,14 @@ jobs:
           echo "Distribution: $version"
           echo "Build required: $should_build"
 
-      - name: Checkout upstream Aura Health
+      - name: Checkout hc6q Aura Health
         if: steps.meta.outputs.should_build == 'true'
         uses: actions/checkout@v4
         with:
-          repository: madebysan/aura-health
-          ref: ${{ steps.meta.outputs.tag }}
+          repository: ${{ env.AURA_BUILD_REPO }}
+          ref: ${{ env.AURA_BUILD_REF }}
           path: upstream
           fetch-depth: 1
-
-      - name: Restore public build configuration
-        if: steps.meta.outputs.should_build == 'true'
-        working-directory: upstream
-        shell: bash
-        run: |
-          cat > Secrets.xcconfig <<'EOF'
-          // Public build defaults. The upstream tag references this file but does not include it.
-          WHOOP_CLIENT_ID =
-          WHOOP_CLIENT_SECRET =
-          #include? "Secrets.local.xcconfig"
-          EOF
-
-      - name: Apply hc6q HealthKit fixes
-        if: steps.meta.outputs.should_build == 'true'
-        working-directory: upstream
-        shell: bash
-        run: |
-          python3 ../source-meta/scripts/patch_aura_health.py
-          python3 ../source-meta/scripts/patch_aura_health_v2.py
 
       - name: Build unsigned Aura Health
         if: steps.meta.outputs.should_build == 'true'
@@ -193,6 +177,7 @@ jobs:
           AURA_TAG: ${{ steps.meta.outputs.tag }}
           AURA_RELEASE_TAG: ${{ steps.meta.outputs.release_tag }}
           AURA_CHANGELOG_B64: ${{ steps.meta.outputs.changelog_b64 }}
+          AURA_BUILD_SHA: ${{ steps.meta.outputs.build_sha }}
         run: |
           set -euo pipefail
           notes="$RUNNER_TEMP/aura-notes.md"
@@ -201,7 +186,8 @@ jobs:
           body = base64.b64decode(os.environ["AURA_CHANGELOG_B64"]).decode("utf-8", errors="replace")
           print(f"Unofficial unsigned Aura Health {os.environ['AURA_VERSION']}, based on upstream {os.environ['AURA_UPSTREAM_VERSION']}.")
           print()
-          print(f"Upstream: https://github.com/madebysan/aura-health/tree/{os.environ['AURA_TAG']}")
+          print(f"Base upstream: https://github.com/madebysan/aura-health/tree/{os.environ['AURA_TAG']}")
+          print(f"hc6q build: https://github.com/hc6q/aura-health/commit/{os.environ['AURA_BUILD_SHA']}")
           print()
           print("## Changes")
           print(body)

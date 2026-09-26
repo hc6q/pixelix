@@ -66,7 +66,7 @@ app = {
     "bundleIdentifier": bundle_id,
     "developerName": "Santiago Alonso",
     "subtitle": "Private health dashboard",
-    "localizedDescription": "Your vitals, labs, medications, habits and health notes in one private dashboard. Aura uses SwiftData, supports Apple Health on iOS, optional CloudKit sync and an optional Claude-powered health assistant using your own API key. This IPA is an unofficial automated build of the upstream open-source project.",
+    "localizedDescription": "Your vitals, labs, medications, habits and health notes in one private dashboard. Aura uses SwiftData, supports Apple Health on iOS, optional CloudKit sync and an optional multi-provider AI health assistant with Groq, Cloudflare Workers AI and Mistral, plus local Vision OCR for document extraction. This IPA is an unofficial unsigned build maintained by hc6q.",
     "versionDescription": changelog,
     "iconURL": icon_url,
     "screenshotURLs": [screenshot_url],
