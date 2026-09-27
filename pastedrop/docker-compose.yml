@@ -1,0 +1,12 @@
+services:
+  pastedrop:
+    build: .
+    container_name: pastedrop
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "${PORT:-8766}:${PORT:-8766}"
+    volumes:
+      - ./data:/data
+    security_opt:
+      - no-new-privileges:true

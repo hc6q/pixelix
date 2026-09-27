@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="composer" id="composer" data-max="{{ max_upload_size }}">
+  <div class="eyebrow"><span class="status-dot"></span> Novo compartilhamento</div>
+  <h1>Um link para qualquer coisa.</h1>
+  <p class="intro">Cole texto, imagens ou arquivos aqui. Seu conteúdo fica disponível pelo tempo que você escolher.</p>
+  <div class="dropzone" id="dropzone" role="button" tabindex="0" aria-label="Selecionar ou arrastar arquivo">
+    <div class="drop-icon">↑</div>
+    <strong>Cole texto, imagens ou arquivos aqui</strong>
+    <span>Arraste um arquivo, clique para escolher ou use Ctrl+V</span>
+    <small>Imagens, vídeos, PDFs, ZIP e outros arquivos</small>
+    <input id="file-input" type="file" hidden>
+  </div>
+  <div id="attachment" class="attachment hidden"></div>
+  <div id="editor-wrap" class="editor-wrap hidden">
+    <div class="editor-bar"><span class="mini-dot"></span><span>Conteúdo</span><button type="button" class="subtle" id="clear-text">Limpar</button></div>
+    <textarea id="text-content" spellcheck="false" placeholder="Cole ou escreva seu texto aqui..."></textarea>
+    <div class="format-row"><label for="format">Formato</label><select id="format"><option value="text">Texto</option><option value="code">Código</option><option value="markdown">Markdown</option></select></div>
+  </div>
+  <form id="create-form" class="options">
+    <div class="options-head"><span>Configurações</span><span class="muted">Opcional</span></div>
+    <div class="field-grid">
+      <label>Título <input id="title" type="text" maxlength="160" placeholder="Sem título" autocomplete="off"></label>
+      <label>Expiração <select id="expiration">{% for seconds, label in expirations.items() %}<option value="{{ seconds }}" {% if seconds == default_expiration %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+      <label>Senha <input id="password" type="password" maxlength="256" placeholder="Sem senha" autocomplete="new-password"></label>
+      <label class="check-field"><input id="delete-after-view" type="checkbox"><span>Apagar após primeira visualização<small>O link fecha para outras pessoas após a primeira abertura.</small></span></label>
+    </div>
+    <div class="action-row"><span class="hint" id="state-hint">Adicione algo para começar.</span><button class="primary" id="create-btn" type="submit" disabled>Criar link <span>↗</span></button></div>
+  </form>
+  <section id="result" class="result hidden" aria-live="polite"><div class="eyebrow"><span class="status-dot"></span> Link criado</div><h2>Pronto para compartilhar.</h2><div class="url-line"><input id="result-url" readonly aria-label="URL criada"><button type="button" id="copy-result">Copiar</button></div><div class="result-actions"><a id="open-result" class="secondary" target="_blank" rel="noopener">Abrir link ↗</a><a id="qr-result" class="secondary" target="_blank" rel="noopener">QR Code ▦</a><button type="button" class="secondary" id="new-result">Criar outro</button></div><p class="muted tiny">A chave para excluir este link fica salva neste navegador.</p></section>
+  <div id="message" class="message hidden" role="alert"></div>
+</section>
+{% endblock %}

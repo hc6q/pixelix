@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}{{ paste.title or paste.filename or 'Paste' }} · PasteDrop{% endblock %}
+{% block content %}
+<section class="viewer">
+  <div class="eyebrow"><span class="status-dot"></span> {{ {'text':'TEXTO', 'code':'CÓDIGO', 'markdown':'MARKDOWN', 'image':'IMAGEM', 'video':'VÍDEO', 'file':'ARQUIVO'}[paste.type] }}</div>
+  <h1>{{ paste.title or paste.filename or 'Sem título' }}</h1>
+  <div class="meta"><span>{{ paste.views }} visualização{% if paste.views != 1 %}ões{% endif %}</span><span>·</span><span>Criado em <time datetime="{{ created_label }}">{{ created_label[:10] }}</time></span><span>·</span><span>Expira: {% if paste.expires_at %}<time datetime="{{ expires_label }}">{{ expires_label[:10] }}</time>{% else %}Nunca{% endif %}</span></div>
+  {% if paste.type == 'image' %}<div class="media-frame"><img src="/raw/{{ paste.id }}" alt="{{ paste.filename }}"></div>{% endif %}
+  {% if paste.type == 'video' %}<div class="media-frame"><video src="/raw/{{ paste.id }}" controls preload="metadata" playsinline></video></div>{% endif %}
+  {% if paste.type == 'file' %}<div class="file-card"><div class="file-icon">↓</div><div><strong>{{ paste.filename }}</strong><small>{{ paste.filename.rsplit('.', 1)[-1]|upper if '.' in paste.filename else 'ARQUIVO' }} · <span data-bytes="{{ paste.file_size }}"></span></small></div></div>{% endif %}
+  {% if paste.text_content is not none %}<div class="content-card {% if paste.type == 'markdown' %}markdown{% elif paste.type == 'code' %}code{% else %}plain{% endif %}">{{ rendered | safe }}</div>{% endif %}
+  {% if paste.filename and paste.type != 'file' %}<p class="file-detail">{{ paste.filename }} <span>·</span> <span data-bytes="{{ paste.file_size }}"></span></p>{% endif %}
+  <div class="viewer-actions">
+    {% if paste.text_content is not none %}<button class="secondary" type="button" id="copy-content" data-raw="/raw/{{ paste.id }}">Copiar texto</button><a class="secondary" href="/raw/{{ paste.id }}" target="_blank" rel="noopener">Ver raw ↗</a>{% else %}<a class="secondary" href="/raw/{{ paste.id }}" download="{{ paste.filename }}">Baixar ↓</a><a class="secondary" href="/raw/{{ paste.id }}" target="_blank" rel="noopener">Abrir original ↗</a>{% endif %}
+    <button class="secondary" type="button" data-copy="{{ links.url }}">Copiar link</button>
+  </div>
+  <a class="back-link" href="/">← Criar outro link</a>
+</section>
+{% endblock %}
